@@ -12,7 +12,13 @@
                     <i class="fas fa-tachometer-alt me-3" style="color: #01214d;"></i>
                     Dashboard
                 </h1>
-                <p class="lead text-muted mb-0">Manage your Gmail data extraction</p>
+                <p class="lead text-muted mb-0">
+                    {% if session.get('auth_method') == 'imap' %}
+                    Manage your IMAP email data extraction
+                    {% else %}
+                    Manage your Gmail data extraction
+                    {% endif %}
+                </p>
             </div>
          
         </div>
@@ -78,22 +84,30 @@
             <div class="card-body p-4">
                 <!-- Tab Navigation -->
                 <ul class="nav nav-tabs mb-4" id="scrapingTabs" role="tablist">
+                    {% if session.get('auth_method') != 'imap' %}
                     <li class="nav-item" role="presentation">
                         <button class="nav-link active" id="gmail-tab" data-bs-toggle="tab" data-bs-target="#gmail-content" type="button" role="tab">
                             <i class="fas fa-envelope me-2"></i>Gmail API
                         </button>
                     </li>
+                    {% endif %}
+                    {% if session.get('auth_method') == 'imap' %}
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="imap-tab" data-bs-toggle="tab" data-bs-target="#imap-content" type="button" role="tab">
+                        <button class="nav-link active" id="imap-tab" data-bs-toggle="tab" data-bs-target="#imap-content" type="button" role="tab">
                             <i class="fas fa-server me-2"></i>IMAP
                         </button>
                     </li>
+                    {% endif %}
                 </ul>
 
                 <!-- Tab Content -->
                 <div class="tab-content" id="scrapingTabContent">
                     <!-- Gmail API Tab -->
+                    {% if session.get('auth_method') != 'imap' %}
                     <div class="tab-pane fade show active" id="gmail-content" role="tabpanel">
+                    {% else %}
+                    <div class="tab-pane fade" id="gmail-content" role="tabpanel">
+                    {% endif %}
                 <!-- Action Buttons -->
                 <div class="row mb-4">
                     <div class="col-md-6">
@@ -125,91 +139,14 @@
                     </div>
 
                     <!-- IMAP Tab -->
+                    {% if session.get('auth_method') == 'imap' %}
+                    <div class="tab-pane fade show active" id="imap-content" role="tabpanel">
+                    {% else %}
                     <div class="tab-pane fade" id="imap-content" role="tabpanel">
-                        <!-- IMAP Configuration Form -->
-                        <div class="row mb-4">
-                            <div class="col-md-12">
-                                <div class="card bg-light">
-                                    <div class="card-body">
-                                        <h6><i class="fas fa-cog me-2"></i>IMAP Configuration</h6>
-                                        <form id="imapForm">
-                                            <div class="row">
-                                                <div class="col-md-6">
-                                                    <div class="mb-3">
-                                                        <label for="imapEmail" class="form-label">Email Address</label>
-                                                        <input type="email" class="form-control" id="imapEmail" required>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <div class="mb-3">
-                                                        <label for="imapPassword" class="form-label">Password/App Password</label>
-                                                        <input type="password" class="form-control" id="imapPassword" required>
-                                                        <div class="form-text">Use App Password if 2FA is enabled</div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-md-4">
-                                                    <div class="mb-3">
-                                                        <label for="imapServer" class="form-label">IMAP Server</label>
-                                                        <select class="form-select" id="imapServer">
-                                                            <option value="">Auto-detect</option>
-                                                            <option value="imap.gmail.com">Gmail (imap.gmail.com)</option>
-                                                            <option value="outlook.office365.com">Outlook (outlook.office365.com)</option>
-                                                            <option value="imap.mail.yahoo.com">Yahoo (imap.mail.yahoo.com)</option>
-                                                            <option value="imap.aol.com">AOL (imap.aol.com)</option>
-                                                            <option value="imap.mail.me.com">iCloud (imap.mail.me.com)</option>
-                                                            <option value="imap.zoho.com">Zoho (imap.zoho.com)</option>
-                                                            <option value="custom">Custom...</option>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-4">
-                                                    <div class="mb-3">
-                                                        <label for="imapPort" class="form-label">Port</label>
-                                                        <input type="number" class="form-control" id="imapPort" value="993">
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-4">
-                                                    <div class="mb-3">
-                                                        <label for="imapFolder" class="form-label">Folder</label>
-                                                        <select class="form-select" id="imapFolder">
-                                                            <option value="INBOX">INBOX</option>
-                                                            <option value="Sent">Sent</option>
-                                                            <option value="Drafts">Drafts</option>
-                                                            <option value="Trash">Trash</option>
-                                                            <option value="Spam">Spam</option>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-md-6">
-                                                    <div class="mb-3">
-                                                        <label for="imapMaxEmails" class="form-label">Max Emails</label>
-                                                        <input type="number" class="form-control" id="imapMaxEmails" placeholder="Leave empty for all emails">
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <div class="mb-3">
-                                                        <div class="form-check mt-4">
-                                                            <input class="form-check-input" type="checkbox" id="imapUseSSL" checked>
-                                                            <label class="form-check-label" for="imapUseSSL">
-                                                                Use SSL/TLS
-                                                            </label>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
+                    {% endif %}
                         <!-- IMAP Action Buttons -->
                         <div class="row mb-4">
-                            <div class="col-md-4">
+                            <div class="col-md-6">
                                 <div class="d-grid">
                                     <button id="testImapBtn" class="btn btn-outline-info btn-lg">
                                         <i class="fas fa-plug me-2"></i>
@@ -218,33 +155,20 @@
                                 </div>
                                 <div class="form-text mt-2 text-muted">
                                     <i class="fas fa-info-circle me-1"></i>
-                                    Test IMAP connection before scraping
+                                    Test IMAP connection using stored credentials
                                 </div>
                             </div>
                             
-                            <div class="col-md-4">
+                            <div class="col-md-6">
                                 <div class="d-grid">
                                     <button id="imapScrapeBtn" class="btn btn-lg btn-custom-primary">
                                         <i class="fas fa-download me-2"></i>
-                                        Scrape with IMAP
+                                        Search & Scrape All Emails
                                     </button>
                                 </div>
                                 <div class="form-text mt-2 text-muted">
                                     <i class="fas fa-info-circle me-1"></i>
-                                    Extract emails using IMAP protocol
-                                </div>
-                            </div>
-                            
-                            <div class="col-md-4">
-                                <div class="d-grid">
-                                    <button id="getImapServersBtn" class="btn btn-outline-secondary btn-lg">
-                                        <i class="fas fa-list me-2"></i>
-                                        Server List
-                                    </button>
-                                </div>
-                                <div class="form-text mt-2 text-muted">
-                                    <i class="fas fa-info-circle me-1"></i>
-                                    View common IMAP server settings
+                                    Extract all emails from INBOX using stored credentials
                                 </div>
                             </div>
                         </div>
@@ -368,7 +292,23 @@ let isScraping = false;
 document.addEventListener('DOMContentLoaded', function() {
     updateStats();
     setupEventListeners();
+    checkAuthMethodAndShowTab();
 });
+
+// Function to check auth method and show appropriate tab
+function checkAuthMethodAndShowTab() {
+    // Server-side logic now handles tab visibility
+    // Just update button text if needed
+    const authMethod = '{{ session.get("auth_method", "gmail") }}';
+    
+    if (authMethod === 'imap') {
+        // Update button text for IMAP scraping
+        const scrapeBtn = document.getElementById('imapScrapeBtn');
+        if (scrapeBtn) {
+            scrapeBtn.innerHTML = '<i class="fas fa-download me-2"></i>Search & Scrape All Emails';
+        }
+    }
+}
 
 function setupEventListeners() {
     document.getElementById('scrapeBtn').addEventListener('click', startScraping);
@@ -758,8 +698,6 @@ function autoDetectImapServer() {
             'hotmail.com': 'outlook.office365.com',
             'yahoo.com': 'imap.mail.yahoo.com',
             'aol.com': 'imap.aol.com',
-            'icloud.com': 'imap.mail.me.com',
-            'zoho.com': 'imap.zoho.com',
             'yandex.com': 'imap.yandex.com'
         };
         
@@ -813,9 +751,6 @@ function testImapConnection() {
 }
 
 function startImapScraping() {
-    const formData = getImapFormData();
-    if (!formData) return;
-    
     if (isScraping) return;
     
     isScraping = true;
@@ -838,8 +773,8 @@ function startImapScraping() {
     updateProgress(0, 'Starting IMAP extraction...');
     
     // Add initial terminal logs
-    addTerminalLog('🚀 Starting IMAP email extraction...', 'info');
-    addTerminalLog(`📧 Connecting to ${formData.email_address}...`, 'processing');
+    addTerminalLog('🚀 Starting IMAP email extraction from dashboard...', 'info');
+    addTerminalLog('📧 Using stored IMAP credentials...', 'processing');
     
     // Connect to real-time log stream
     const eventSource = new EventSource('/stream_logs');
@@ -858,14 +793,8 @@ function startImapScraping() {
         addTerminalLog('✅ Connected to real-time log stream', 'success');
     };
     
-    // Make the actual API call
-    fetch('/imap_scrape', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData)
-    })
+    // Make the actual API call using stored credentials
+    fetch('/dashboard_imap_scrape')
     .then(response => response.json())
     .then(data => {
         isScraping = false;
@@ -873,7 +802,6 @@ function startImapScraping() {
         if (data.success) {
             addTerminalLog('📊 IMAP Scraping Summary:', 'info');
             addTerminalLog(`   ✅ Successfully scraped: ${data.emails_count} emails`, 'success');
-            addTerminalLog(`   📁 Folder: ${data.folder}`, 'info');
             addTerminalLog(`   🖥️ Server: ${data.imap_server}`, 'info');
             addTerminalLog('💾 Saving extracted data to file...', 'processing');
             addTerminalLog(`✅ Data saved to: ${data.filename}`, 'success');

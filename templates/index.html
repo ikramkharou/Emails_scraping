@@ -114,10 +114,10 @@
                                          <option value="outlook.office365.com">Outlook (outlook.office365.com)</option>
                                          <option value="imap.mail.yahoo.com">Yahoo (imap.mail.yahoo.com)</option>
                                          <option value="imap.aol.com">AOL (imap.aol.com)</option>
-                                         <option value="imap.mail.me.com">iCloud (imap.mail.me.com)</option>
-                                         <option value="imap.zoho.com">Zoho (imap.zoho.com)</option>
                                          <option value="custom">Custom...</option>
                                      </select>
+                                     <!-- Custom Server Input (hidden by default) -->
+                                     <input type="text" class="form-control form-control-sm mt-2" id="customImapServer" placeholder="Enter custom IMAP server (e.g., mail.example.com)" style="border-color: #dee2e6; display: none;">
                                  </div>
                                  <div class="col-md-4">
                                      <label for="imapPort" class="form-label small">Port</label>
@@ -154,7 +154,21 @@
                      </div>
                  </div>
              </div>
-        </div>
+                 </div>
+     </div>
+ </div>
+
+ <!-- Toast Notification Container -->
+ <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1050;">
+     <div id="imapToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true" style="background-color: #f8fff9; border: 1px solid #d4edda;">
+         <div class="toast-header" style="background-color: #d4edda; border-bottom: 1px solid #c3e6cb;">
+             <i id="toastIcon" class="fas fa-info-circle me-2"></i>
+             <strong id="toastTitle" class="me-auto">IMAP Connection</strong>
+             <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+         </div>
+         <div id="toastBody" class="toast-body" style="color: #155724;">
+             <!-- Toast content will be inserted here -->
+         </div>
     </div>
 </div>
 
@@ -170,12 +184,8 @@
                     event.preventDefault();
                     event.stopPropagation();
                 } else {
-                    // Form is valid, show loading state on submit button
-                    const submitBtn = form.querySelector('button[type="submit"]');
-                    if (submitBtn) {
-                        submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Starting Authentication...';
-                        submitBtn.disabled = true;
-                    }
+                    // Form is valid, just submit without changing button
+                    // No loading state to prevent size changes
                 }
                 form.classList.add('was-validated');
             }, false);
@@ -210,8 +220,6 @@ function autoDetectImapServer() {
             'hotmail.com': 'outlook.office365.com',
             'yahoo.com': 'imap.mail.yahoo.com',
             'aol.com': 'imap.aol.com',
-            'icloud.com': 'imap.mail.me.com',
-            'zoho.com': 'imap.zoho.com',
             'yandex.com': 'imap.yandex.com'
         };
         
@@ -225,21 +233,28 @@ function getImapFormData() {
     const email = document.getElementById('imapEmail').value;
     const password = document.getElementById('imapPassword').value;
     const server = document.getElementById('imapServer').value;
+    const customServer = document.getElementById('customImapServer').value;
     const port = document.getElementById('imapPort').value;
-    const folder = document.getElementById('imapFolder').value;
     const useSSL = document.getElementById('imapUseSSL').checked;
     
     if (!email || !password) {
-        alert('Email address and password are required');
+        showToast('error', 'Validation Error', 'Email address and password are required');
+        return null;
+    }
+    
+    // Use custom server if selected, otherwise use selected server
+    const finalServer = server === 'custom' ? customServer : server;
+    
+    if (server === 'custom' && !customServer) {
+        showToast('error', 'Validation Error', 'Please enter a custom IMAP server address');
         return null;
     }
     
     return {
         email_address: email,
         password: password,
-        imap_server: server || null,
+        imap_server: finalServer || null,
         imap_port: port ? parseInt(port) : null,
-        folder: folder,
         use_ssl: useSSL
     };
 }
@@ -262,16 +277,17 @@ function testImapConnection() {
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            alert(`✅ IMAP connection successful!\nServer: ${data.imap_server}\nFolders: ${data.folders.length} available\nINBOX: ${data.inbox_count} emails`);
+            showToast('success', 'Connection Successful', 
+                `Server: ${data.imap_server}<br>Folders: ${data.folders.length} available<br>INBOX: ${data.inbox_count} emails`);
         } else {
-            alert(`❌ IMAP connection failed!\nError: ${data.error}`);
+            showToast('error', 'Connection Failed', data.error);
         }
     })
     .catch(error => {
-        alert(`❌ Network error: ${error.message}`);
+        showToast('error', 'Network Error', error.message);
     })
     .finally(() => {
-        btn.innerHTML = '<i class="fas fa-plug me-2"></i>Test Connection';
+        btn.innerHTML = '<i class="fas fa-plug me-1"></i>Test Connection';
         btn.disabled = false;
     });
 }
@@ -281,10 +297,11 @@ function startImapScraping() {
     if (!formData) return;
     
     const btn = document.getElementById('startImapBtn');
-    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Starting...';
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Authenticating...';
     btn.disabled = true;
     
-    fetch('/imap_scrape', {
+    // Test the connection and store credentials
+    fetch('/test_imap_connection', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -294,26 +311,101 @@ function startImapScraping() {
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            alert(`✅ IMAP scraping successful!\nScraped: ${data.emails_count} emails\nFile: ${data.filename}\n\nRedirecting to dashboard...`);
-            // Redirect to dashboard
-            window.location.href = '/dashboard';
+            // Connection successful, store credentials and redirect
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Redirecting...';
+            
+            return fetch('/store_imap_credentials', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData)
+            });
         } else {
-            alert(`❌ IMAP scraping failed!\nError: ${data.error}`);
+            throw new Error(data.error || 'Connection failed');
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showToast('success', 'Authentication Successful', 
+                `Connected to: ${data.imap_server}<br>Redirecting to dashboard...`);
+            // Redirect to dashboard immediately
+            window.location.href = '/dashboard?auth_method=imap';
+        } else {
+            showToast('error', 'Authentication Failed', data.error);
         }
     })
     .catch(error => {
-        alert(`❌ Network error: ${error.message}`);
+        showToast('error', 'Error', error.message);
     })
     .finally(() => {
-        btn.innerHTML = '<i class="fas fa-download me-2"></i>Start IMAP Scraping';
+        btn.innerHTML = '<i class="fas fa-download me-1"></i>Start Scraping';
         btn.disabled = false;
     });
+}
+
+// Toast notification function
+function showToast(type, title, message) {
+    const toast = document.getElementById('imapToast');
+    const toastIcon = document.getElementById('toastIcon');
+    const toastTitle = document.getElementById('toastTitle');
+    const toastBody = document.getElementById('toastBody');
+    
+    // Set icon and color based on type
+    if (type === 'success') {
+        toastIcon.className = 'fas fa-check-circle me-2';
+        toastIcon.style.color = '#28a745';
+        toast.style.backgroundColor = '#f8fff9';
+        toast.style.borderColor = '#d4edda';
+        toast.querySelector('.toast-header').style.backgroundColor = '#d4edda';
+        toastBody.style.color = '#155724';
+    } else if (type === 'error') {
+        toastIcon.className = 'fas fa-exclamation-circle me-2';
+        toastIcon.style.color = '#dc3545';
+        toast.style.backgroundColor = '#fff8f8';
+        toast.style.borderColor = '#f5c6cb';
+        toast.querySelector('.toast-header').style.backgroundColor = '#f5c6cb';
+        toastBody.style.color = '#721c24';
+    } else {
+        toastIcon.className = 'fas fa-info-circle me-2';
+        toastIcon.style.color = '#17a2b8';
+        toast.style.backgroundColor = '#f8f9ff';
+        toast.style.borderColor = '#cce7ff';
+        toast.querySelector('.toast-header').style.backgroundColor = '#cce7ff';
+        toastBody.style.color = '#004085';
+    }
+    
+    toastTitle.textContent = title;
+    toastBody.innerHTML = message;
+    
+    // Show the toast
+    const bsToast = new bootstrap.Toast(toast);
+    bsToast.show();
+}
+
+// Custom server input handling
+function handleServerSelection() {
+    const serverSelect = document.getElementById('imapServer');
+    const customInput = document.getElementById('customImapServer');
+    
+    if (serverSelect.value === 'custom') {
+        customInput.style.display = 'block';
+        customInput.required = true;
+    } else {
+        customInput.style.display = 'none';
+        customInput.required = false;
+        customInput.value = '';
+    }
 }
 
 // Event listeners for IMAP
 document.addEventListener('DOMContentLoaded', function() {
     // Auto-detect server when email changes
     document.getElementById('imapEmail').addEventListener('change', autoDetectImapServer);
+    
+    // Handle server selection changes
+    document.getElementById('imapServer').addEventListener('change', handleServerSelection);
     
     // IMAP button event listeners
     document.getElementById('testImapBtn').addEventListener('click', testImapConnection);

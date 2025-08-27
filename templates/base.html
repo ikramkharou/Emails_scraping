@@ -584,6 +584,146 @@
             border-color: #1a365d !important;
             transition: all 0.2s ease;
         }
+
+        /* IMAP Dashboard Button Styles */
+        #testImapBtn {
+            background-color: white !important;
+            border: 1px solid #dee2e6 !important;
+            color: #6c757d !important;
+            height: 45px !important;
+            width: 100% !important;
+            transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease !important;
+            transform: none !important;
+            box-shadow: none !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            text-align: center !important;
+        }
+
+        #testImapBtn:hover {
+            background-color: #f8f9fa !important;
+            border-color: #adb5bd !important;
+            color: #495057 !important;
+            height: 45px !important;
+            width: 100% !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+        }
+
+        /* Search & Scrape button - same blue as Gmail dashboard */
+        #imapScrapeBtn {
+            background-color: #55729b !important;
+            border: 1px solid #224577 !important;
+            color: white !important;
+            height: 45px !important;
+            width: 100% !important;
+            transition: background-color 0.2s ease, border-color 0.2s ease !important;
+            transform: none !important;
+            box-shadow: none !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            text-align: center !important;
+        }
+
+        #imapScrapeBtn:hover {
+            background-color: #224577 !important;
+            border-color: #1a365d !important;
+            color: white !important;
+            height: 45px !important;
+            width: 100% !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+        }
+
+        /* Prevent button size changes on click */
+        #testImapBtn:active, #imapScrapeBtn:active,
+        #testImapBtn:focus, #imapScrapeBtn:focus {
+            transform: none !important;
+            box-shadow: none !important;
+            height: 45px !important;
+            width: 100% !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+        }
+
+        /* Prevent Gmail dashboard button size changes during loading */
+        #scrapeBtn {
+            height: 48px !important;
+            width: 100% !important;
+            transition: background-color 0.2s ease, border-color 0.2s ease !important;
+            transform: none !important;
+            box-shadow: none !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            text-align: center !important;
+        }
+
+        #scrapeBtn:hover,
+        #scrapeBtn:active,
+        #scrapeBtn:focus {
+            transform: none !important;
+            box-shadow: none !important;
+            height: 48px !important;
+            width: 100% !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+        }
+
+
+
+        /* Soft grey hover effect for Gmail input field */
+        #email:hover {
+            border-color: #c8c9ca !important;
+            transition: border-color 0.2s ease !important;
+        }
+
+        #email:focus {
+            border-color: #adb5bd !important;
+            box-shadow: 0 0 0 0.2rem rgba(108, 117, 125, 0.1) !important;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease !important;
+        }
+
+        #email {
+            transition: border-color 0.2s ease !important;
+        }
+
+        /* Remove green validation color from Gmail input */
+        #email.is-valid,
+        #email.was-validated:valid,
+        #email.is-valid:hover,
+        #email.was-validated:valid:hover {
+            border-color: #dee2e6 !important;
+            box-shadow: none !important;
+        }
+
+        #email.is-valid:focus,
+        #email.was-validated:valid:focus,
+        #email.is-valid:hover:focus,
+        #email.was-validated:valid:hover:focus {
+            border-color: #adb5bd !important;
+            box-shadow: 0 0 0 0.2rem rgba(108, 117, 125, 0.1) !important;
+        }
+
+        /* Override any Bootstrap green validation styles */
+        .was-validated #email:valid,
+        .was-validated #email:valid:hover,
+        .was-validated #email:valid:focus {
+            border-color: #dee2e6 !important;
+            background-image: none !important;
+            box-shadow: none !important;
+        }
+
+        .was-validated #email:valid:focus {
+            border-color: #adb5bd !important;
+            box-shadow: 0 0 0 0.2rem rgba(108, 117, 125, 0.1) !important;
+        }
     </style>
 </head>
 <body>
@@ -607,12 +747,7 @@
                                 <i class="fas fa-home me-1"></i>Home
                             </a>
                         </li>
-                        {% if session.get('credentials') %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('dashboard') }}">
-                                <i class="fas fa-tachometer-alt me-1"></i>Dashboard
-                            </a>
-                        </li>
+                        {% if session.get('credentials') or session.get('imap_credentials') %}
                         <li class="nav-item">
                             <a class="nav-link" href="{{ url_for('clear_auth') }}">
                                 <i class="fas fa-sign-out-alt me-1"></i>Logout

@@ -76,6 +76,24 @@
         <div class="card bg-white">
             
             <div class="card-body p-4">
+                <!-- Tab Navigation -->
+                <ul class="nav nav-tabs mb-4" id="scrapingTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="gmail-tab" data-bs-toggle="tab" data-bs-target="#gmail-content" type="button" role="tab">
+                            <i class="fas fa-envelope me-2"></i>Gmail API
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="imap-tab" data-bs-toggle="tab" data-bs-target="#imap-content" type="button" role="tab">
+                            <i class="fas fa-server me-2"></i>IMAP
+                        </button>
+                    </li>
+                </ul>
+
+                <!-- Tab Content -->
+                <div class="tab-content" id="scrapingTabContent">
+                    <!-- Gmail API Tab -->
+                    <div class="tab-pane fade show active" id="gmail-content" role="tabpanel">
                 <!-- Action Buttons -->
                 <div class="row mb-4">
                     <div class="col-md-6">
@@ -101,6 +119,134 @@
                         <div class="form-text mt-2 text-muted">
                             <i class="fas fa-info-circle me-1"></i>
                             Verify your current Gmail API permissions
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- IMAP Tab -->
+                    <div class="tab-pane fade" id="imap-content" role="tabpanel">
+                        <!-- IMAP Configuration Form -->
+                        <div class="row mb-4">
+                            <div class="col-md-12">
+                                <div class="card bg-light">
+                                    <div class="card-body">
+                                        <h6><i class="fas fa-cog me-2"></i>IMAP Configuration</h6>
+                                        <form id="imapForm">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="mb-3">
+                                                        <label for="imapEmail" class="form-label">Email Address</label>
+                                                        <input type="email" class="form-control" id="imapEmail" required>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="mb-3">
+                                                        <label for="imapPassword" class="form-label">Password/App Password</label>
+                                                        <input type="password" class="form-control" id="imapPassword" required>
+                                                        <div class="form-text">Use App Password if 2FA is enabled</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <div class="mb-3">
+                                                        <label for="imapServer" class="form-label">IMAP Server</label>
+                                                        <select class="form-select" id="imapServer">
+                                                            <option value="">Auto-detect</option>
+                                                            <option value="imap.gmail.com">Gmail (imap.gmail.com)</option>
+                                                            <option value="outlook.office365.com">Outlook (outlook.office365.com)</option>
+                                                            <option value="imap.mail.yahoo.com">Yahoo (imap.mail.yahoo.com)</option>
+                                                            <option value="imap.aol.com">AOL (imap.aol.com)</option>
+                                                            <option value="imap.mail.me.com">iCloud (imap.mail.me.com)</option>
+                                                            <option value="imap.zoho.com">Zoho (imap.zoho.com)</option>
+                                                            <option value="custom">Custom...</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="mb-3">
+                                                        <label for="imapPort" class="form-label">Port</label>
+                                                        <input type="number" class="form-control" id="imapPort" value="993">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="mb-3">
+                                                        <label for="imapFolder" class="form-label">Folder</label>
+                                                        <select class="form-select" id="imapFolder">
+                                                            <option value="INBOX">INBOX</option>
+                                                            <option value="Sent">Sent</option>
+                                                            <option value="Drafts">Drafts</option>
+                                                            <option value="Trash">Trash</option>
+                                                            <option value="Spam">Spam</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="mb-3">
+                                                        <label for="imapMaxEmails" class="form-label">Max Emails</label>
+                                                        <input type="number" class="form-control" id="imapMaxEmails" placeholder="Leave empty for all emails">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="mb-3">
+                                                        <div class="form-check mt-4">
+                                                            <input class="form-check-input" type="checkbox" id="imapUseSSL" checked>
+                                                            <label class="form-check-label" for="imapUseSSL">
+                                                                Use SSL/TLS
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- IMAP Action Buttons -->
+                        <div class="row mb-4">
+                            <div class="col-md-4">
+                                <div class="d-grid">
+                                    <button id="testImapBtn" class="btn btn-outline-info btn-lg">
+                                        <i class="fas fa-plug me-2"></i>
+                                        Test Connection
+                                    </button>
+                                </div>
+                                <div class="form-text mt-2 text-muted">
+                                    <i class="fas fa-info-circle me-1"></i>
+                                    Test IMAP connection before scraping
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-4">
+                                <div class="d-grid">
+                                    <button id="imapScrapeBtn" class="btn btn-lg btn-custom-primary">
+                                        <i class="fas fa-download me-2"></i>
+                                        Scrape with IMAP
+                                    </button>
+                                </div>
+                                <div class="form-text mt-2 text-muted">
+                                    <i class="fas fa-info-circle me-1"></i>
+                                    Extract emails using IMAP protocol
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-4">
+                                <div class="d-grid">
+                                    <button id="getImapServersBtn" class="btn btn-outline-secondary btn-lg">
+                                        <i class="fas fa-list me-2"></i>
+                                        Server List
+                                    </button>
+                                </div>
+                                <div class="form-text mt-2 text-muted">
+                                    <i class="fas fa-info-circle me-1"></i>
+                                    View common IMAP server settings
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -229,12 +375,26 @@ function setupEventListeners() {
     document.getElementById('checkPermissionsBtn').addEventListener('click', checkPermissions);
     document.getElementById('clearTerminalBtn').addEventListener('click', clearTerminal);
     document.getElementById('copyTerminalBtn').addEventListener('click', copyTerminal);
+    
+    // IMAP event listeners
+    document.getElementById('testImapBtn').addEventListener('click', testImapConnection);
+    document.getElementById('imapScrapeBtn').addEventListener('click', startImapScraping);
+    document.getElementById('getImapServersBtn').addEventListener('click', showImapServers);
+    
+    // Auto-detect server when email changes
+    document.getElementById('imapEmail').addEventListener('change', autoDetectImapServer);
 }
 
 function updateStats() {
     // Update dashboard stats
     document.getElementById('lastScrape').textContent = 'Never';
     document.getElementById('status').textContent = 'Ready';
+    
+    // Test function to manually update total emails (for debugging)
+    window.testUpdateTotalEmails = function(count) {
+        console.log('Manually updating total emails to:', count);
+        document.getElementById('totalEmails').textContent = count;
+    };
 }
 
 function startScraping() {
@@ -271,6 +431,18 @@ function startScraping() {
            // Skip heartbeat messages
            if (data.message && data.type !== 'heartbeat') {
                addTerminalLog(data.message, data.type);
+               
+               // Update Total Emails card when we find the total count
+               if (data.message && data.message.includes('Total emails found:')) {
+                   console.log('Found total emails message:', data.message);
+                   const match = data.message.match(/Total emails found: (\d+)/);
+                   if (match) {
+                       console.log('Updating total emails card with:', match[1]);
+                       document.getElementById('totalEmails').textContent = match[1];
+                   } else {
+                       console.log('No match found in message:', data.message);
+                   }
+               }
            }
        };
        
@@ -286,19 +458,23 @@ function startScraping() {
     // Make the actual API call immediately
     fetch('/search_and_scrape_emails')
         .then(response => response.json())
-        .then(data => {
-            isScraping = false;
-            
-            if (data.success) {
-                addTerminalLog('📊 Extraction Summary:', 'info');
-                addTerminalLog(`   ✅ Successful: ${data.success_count || data.emails_count}`, 'success');
-                addTerminalLog(`   ❌ Failed: ${data.error_count || 0}`, 'warning');
-                addTerminalLog(`   📧 Total processed: ${data.total_emails}`, 'info');
-                addTerminalLog('💾 Saving extracted data to file...', 'processing');
-                addTerminalLog(`✅ Data saved to: ${data.filename}`, 'success');
-                addTerminalLog('🎉 Extraction completed successfully!', 'complete');
-                showSuccess(data);
-            } else {
+                 .then(data => {
+             isScraping = false;
+             
+             if (data.success) {
+                 // Update the Total Emails card immediately when we get the count
+                 console.log('Final response - total_emails:', data.total_emails);
+                 document.getElementById('totalEmails').textContent = data.total_emails || '0';
+                 
+                 addTerminalLog('📊 Extraction Summary:', 'info');
+                 addTerminalLog(`   ✅ Successful: ${data.success_count || data.emails_count}`, 'success');
+                 addTerminalLog(`   ❌ Failed: ${data.error_count || 0}`, 'warning');
+                 addTerminalLog(`   📧 Total processed: ${data.total_emails}`, 'info');
+                 addTerminalLog('💾 Saving extracted data to file...', 'processing');
+                 addTerminalLog(`✅ Data saved to: ${data.filename}`, 'success');
+                 addTerminalLog('🎉 Extraction completed successfully!', 'complete');
+                 showSuccess(data);
+             } else {
                 addTerminalLog('❌ Extraction failed!', 'error');
                 addTerminalLog(`Error: ${data.error}`, 'error');
                 showError(data.error);
@@ -565,6 +741,346 @@ function updateProgress(percent, message) {
     if (percent > 0) {
         addTerminalLog(`Progress: ${percent}% - ${message}`, 'processing');
     }
+}
+
+// IMAP Functions
+function autoDetectImapServer() {
+    const email = document.getElementById('imapEmail').value;
+    const serverSelect = document.getElementById('imapServer');
+    
+    if (email && email.includes('@')) {
+        const domain = email.split('@')[1].toLowerCase();
+        
+        // Common IMAP servers
+        const servers = {
+            'gmail.com': 'imap.gmail.com',
+            'outlook.com': 'outlook.office365.com',
+            'hotmail.com': 'outlook.office365.com',
+            'yahoo.com': 'imap.mail.yahoo.com',
+            'aol.com': 'imap.aol.com',
+            'icloud.com': 'imap.mail.me.com',
+            'zoho.com': 'imap.zoho.com',
+            'yandex.com': 'imap.yandex.com'
+        };
+        
+        if (servers[domain]) {
+            serverSelect.value = servers[domain];
+        }
+    }
+}
+
+function testImapConnection() {
+    const formData = getImapFormData();
+    if (!formData) return;
+    
+    const btn = document.getElementById('testImapBtn');
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Testing...';
+    btn.disabled = true;
+    
+    clearTerminal();
+    addTerminalLog('🔍 Testing IMAP connection...', 'info');
+    
+    fetch('/test_imap_connection', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            addTerminalLog('✅ IMAP connection successful!', 'success');
+            addTerminalLog(`📧 Server: ${data.imap_server}`, 'info');
+            addTerminalLog(`📁 Folders: ${data.folders.length} available`, 'info');
+            addTerminalLog(`📬 INBOX: ${data.inbox_count} emails`, 'info');
+            showImapSuccess(data);
+        } else {
+            addTerminalLog('❌ IMAP connection failed!', 'error');
+            addTerminalLog(`Error: ${data.error}`, 'error');
+            showError(data.error);
+        }
+    })
+    .catch(error => {
+        addTerminalLog('❌ Network error occurred!', 'error');
+        addTerminalLog(`Error: ${error.message}`, 'error');
+        showError('Network error: ' + error.message);
+    })
+    .finally(() => {
+        btn.innerHTML = '<i class="fas fa-plug me-2"></i>Test Connection';
+        btn.disabled = false;
+    });
+}
+
+function startImapScraping() {
+    const formData = getImapFormData();
+    if (!formData) return;
+    
+    if (isScraping) return;
+    
+    isScraping = true;
+    const scrapeBtn = document.getElementById('imapScrapeBtn');
+    const progressCard = document.getElementById('progressCard');
+    const resultsCard = document.getElementById('resultsCard');
+    const previewCard = document.getElementById('previewCard');
+    
+    // Clear terminal and show initial message
+    clearTerminal();
+    
+    // Update UI
+    scrapeBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Scraping...';
+    scrapeBtn.disabled = true;
+    progressCard.style.display = 'block';
+    resultsCard.style.display = 'none';
+    previewCard.style.display = 'none';
+    
+    // Show progress
+    updateProgress(0, 'Starting IMAP extraction...');
+    
+    // Add initial terminal logs
+    addTerminalLog('🚀 Starting IMAP email extraction...', 'info');
+    addTerminalLog(`📧 Connecting to ${formData.email_address}...`, 'processing');
+    
+    // Connect to real-time log stream
+    const eventSource = new EventSource('/stream_logs');
+    eventSource.onmessage = function(event) {
+        const data = JSON.parse(event.data);
+        if (data.message && data.type !== 'heartbeat') {
+            addTerminalLog(data.message, data.type);
+        }
+    };
+    
+    eventSource.onerror = function(event) {
+        console.log('SSE connection error (normal during development)');
+    };
+    
+    eventSource.onopen = function(event) {
+        addTerminalLog('✅ Connected to real-time log stream', 'success');
+    };
+    
+    // Make the actual API call
+    fetch('/imap_scrape', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        isScraping = false;
+        
+        if (data.success) {
+            addTerminalLog('📊 IMAP Scraping Summary:', 'info');
+            addTerminalLog(`   ✅ Successfully scraped: ${data.emails_count} emails`, 'success');
+            addTerminalLog(`   📁 Folder: ${data.folder}`, 'info');
+            addTerminalLog(`   🖥️ Server: ${data.imap_server}`, 'info');
+            addTerminalLog('💾 Saving extracted data to file...', 'processing');
+            addTerminalLog(`✅ Data saved to: ${data.filename}`, 'success');
+            addTerminalLog('🎉 IMAP extraction completed successfully!', 'complete');
+            showImapSuccess(data);
+        } else {
+            addTerminalLog('❌ IMAP extraction failed!', 'error');
+            addTerminalLog(`Error: ${data.error}`, 'error');
+            showError(data.error);
+        }
+    })
+    .catch(error => {
+        isScraping = false;
+        addTerminalLog('❌ Network error occurred!', 'error');
+        addTerminalLog(`Error: ${error.message}`, 'error');
+        showError('Network error: ' + error.message);
+    })
+    .finally(() => {
+        if (eventSource) {
+            eventSource.close();
+        }
+        scrapeBtn.innerHTML = '<i class="fas fa-download me-2"></i>Scrape with IMAP';
+        scrapeBtn.disabled = false;
+        progressCard.style.display = 'none';
+    });
+}
+
+function getImapFormData() {
+    const email = document.getElementById('imapEmail').value;
+    const password = document.getElementById('imapPassword').value;
+    const server = document.getElementById('imapServer').value;
+    const port = document.getElementById('imapPort').value;
+    const folder = document.getElementById('imapFolder').value;
+    const maxEmails = document.getElementById('imapMaxEmails').value;
+    const useSSL = document.getElementById('imapUseSSL').checked;
+    
+    if (!email || !password) {
+        showError('Email address and password are required');
+        return null;
+    }
+    
+    return {
+        email_address: email,
+        password: password,
+        imap_server: server || null,
+        imap_port: port ? parseInt(port) : null,
+        folder: folder,
+        max_emails: maxEmails ? parseInt(maxEmails) : null,
+        use_ssl: useSSL
+    };
+}
+
+function showImapSuccess(data) {
+    const resultsCard = document.getElementById('resultsCard');
+    const resultsContent = document.getElementById('resultsContent');
+    const downloadSection = document.getElementById('downloadSection');
+    const downloadBtn = document.getElementById('downloadBtn');
+    const previewCard = document.getElementById('previewCard');
+    
+    // Update results
+    resultsContent.innerHTML = `
+        <div class="alert alert-success">
+            <h6><i class="fas fa-check-circle me-2"></i>IMAP Extraction Successful!</h6>
+            <p class="mb-2">Successfully scraped <strong>${data.emails_count}</strong> emails using IMAP protocol.</p>
+            <p class="mb-0">User: <strong>${data.user_email}</strong></p>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card bg-light">
+                    <div class="card-body">
+                        <h6><i class="fas fa-chart-bar me-2"></i>Statistics</h6>
+                        <ul class="list-unstyled mb-0">
+                            <li><strong>Scraped Emails:</strong> ${data.emails_count}</li>
+                            <li><strong>Folder:</strong> ${data.folder}</li>
+                            <li><strong>Server:</strong> ${data.imap_server}</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card bg-light">
+                    <div class="card-body">
+                        <h6><i class="fas fa-file-alt me-2"></i>File Information</h6>
+                        <ul class="list-unstyled mb-0">
+                            <li><strong>Filename:</strong> ${data.filename}</li>
+                            <li><strong>Format:</strong> JSON</li>
+                            <li><strong>Status:</strong> Ready for download</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    // Setup download
+    downloadBtn.href = '/download/' + data.filename;
+    downloadSection.style.display = 'block';
+    
+    // Show preview
+    if (data.emails && data.emails.length > 0) {
+        showImapEmailPreview(data.emails);
+        previewCard.style.display = 'block';
+    }
+    
+    resultsCard.style.display = 'block';
+    
+    // Update stats
+    document.getElementById('totalEmails').textContent = data.emails_count;
+    document.getElementById('scrapedEmails').textContent = data.emails_count;
+    document.getElementById('lastScrape').textContent = new Date().toLocaleTimeString();
+}
+
+function showImapEmailPreview(emails) {
+    const tableBody = document.getElementById('emailTableBody');
+    tableBody.innerHTML = '';
+    
+    emails.slice(0, 10).forEach(email => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${email.from || 'Unknown'}</td>
+            <td>${email.subject || 'No Subject'}</td>
+            <td>${email.date ? new Date(email.date).toLocaleDateString() : 'Unknown'}</td>
+            <td><span class="badge bg-info">IMAP</span></td>
+            <td>${email.size || 0} bytes</td>
+        `;
+        tableBody.appendChild(row);
+    });
+}
+
+function showImapServers() {
+    fetch('/get_imap_servers')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showImapServersModal(data.imap_servers);
+            } else {
+                showError('Failed to load IMAP servers');
+            }
+        })
+        .catch(error => {
+            showError('Network error: ' + error.message);
+        });
+}
+
+function showImapServersModal(servers) {
+    let modalHtml = `
+        <div class="modal fade" id="imapServersModal" tabindex="-1">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">
+                            <i class="fas fa-list me-2"></i>Common IMAP Server Settings
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Provider</th>
+                                        <th>Server</th>
+                                        <th>Port</th>
+                                        <th>SSL</th>
+                                        <th>Notes</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+    `;
+    
+    for (const [domain, config] of Object.entries(servers)) {
+        modalHtml += `
+            <tr>
+                <td><strong>${domain}</strong></td>
+                <td><code>${config.server}</code></td>
+                <td>${config.port}</td>
+                <td><span class="badge bg-${config.ssl ? 'success' : 'warning'}">${config.ssl ? 'Yes' : 'No'}</span></td>
+                <td><small>${config.note}</small></td>
+            </tr>
+        `;
+    }
+    
+    modalHtml += `
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    // Remove existing modal if any
+    const existingModal = document.getElementById('imapServersModal');
+    if (existingModal) {
+        existingModal.remove();
+    }
+    
+    // Add modal to page
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+    
+    // Show modal
+    const modal = new bootstrap.Modal(document.getElementById('imapServersModal'));
+    modal.show();
 }
 </script>
 {% endblock %}

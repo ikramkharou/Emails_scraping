@@ -10,11 +10,29 @@
             <div class="icon-large">
                 <i class="fas fa-envelope-open-text" style="color: #01214d;"></i>
             </div>
-            <h1 class="display-4 fw-bold mb-3" style="color: #01214d;">Gmail Scraper Pro</h1>
-            <p class="lead text-muted mb-0">Professional Email Data Extraction Tool</p>
-            <p class="text-secondary">Extract, analyze, and export your Gmail data with enterprise-grade security</p>
+            <h1 class="display-4 fw-bold mb-3" style="color: #01214d;">Mail Scraper Extractor </h1>
+            <p class="lead text-muted mb-0">Professional Email Data Extraction Tool — Raw RFC822  </p>
+            <p class="text-secondary">Extract, analyze, and export your email data with enterprise-grade security</p>
         </div>
 
+                 <!-- Tab Navigation -->
+         <ul class="nav nav-tabs mb-4" id="authTabs" role="tablist">
+             <li class="nav-item" role="presentation">
+                 <button class="nav-link active small" id="gmail-tab" data-bs-toggle="tab" data-bs-target="#gmail-content" type="button" role="tab">
+                     <i class="fas fa-envelope me-1"></i>Gmail API
+                 </button>
+             </li>
+             <li class="nav-item" role="presentation">
+                 <button class="nav-link small" id="imap-tab" data-bs-toggle="tab" data-bs-target="#imap-content" type="button" role="tab">
+                     <i class="fas fa-server me-1"></i>IMAP
+                 </button>
+             </li>
+         </ul>
+
+        <!-- Tab Content -->
+        <div class="tab-content" id="authTabContent">
+            <!-- Gmail API Tab -->
+            <div class="tab-pane fade show active" id="gmail-content" role="tabpanel">
                  <!-- Main Authentication Card -->
          <div class="card">
             <div class="card-body p-4">
@@ -40,25 +58,108 @@
                         </div>
                     </div>
 
-                    <div class="d-grid gap-2">
-                        <button type="submit" class="btn btn-lg" style="background-color: #55729b; color: white; border-color: #224577;">
-                            Start Authentication
+                                                         <div class="d-flex justify-content-center">
+                                 <button type="submit" class="btn btn-sm px-4" style="background-color: #55729b; color: white; border-color: #224577; min-width: 200px;">
+                                     <i class="fas fa-sign-in-alt me-2"></i>Start Authentication
                         </button>
                     </div>
                 </form>
+                    </div>
             </div>
         </div>
 
+                         <!-- IMAP Tab -->
+             <div class="tab-pane fade" id="imap-content" role="tabpanel">
+                 <!-- Simple Professional IMAP Configuration Card -->
+                 <div class="card border" style="background-color: white;">
+                     <div class="card-header bg-light border-bottom py-3">
+                         <h6 class="mb-0 text-dark">
+                             <i class="fas fa-server me-2"></i>
+                             IMAP Email Configuration
+                         </h6>
+                     </div>
+                     <div class="card-body p-3">
+                         <form id="imapForm" class="needs-validation" novalidate>
+                             <!-- Simple Info Text -->
+                             <div class="mb-2 text-muted small">
+                                 <i class="fas fa-info-circle me-1"></i>
+                                 Enter your email credentials. For Gmail, use an App Password if 2FA is enabled.
+                             </div>
 
+                             <!-- Email & Password Row -->
+                             <div class="row mb-3">
+                                 <div class="col-md-6">
+                                     <label for="imapEmail" class="form-label small">Email Address</label>
+                                     <input type="email" class="form-control form-control-sm" id="imapEmail" placeholder="Enter your email address" style="border-color: #dee2e6;" required>
+                                     <div class="invalid-feedback small">
+                                         Please enter a valid email address.
+                                     </div>
+                                 </div>
+                                 <div class="col-md-6">
+                                     <label for="imapPassword" class="form-label small">Password/App Password</label>
+                                     <input type="password" class="form-control form-control-sm" id="imapPassword" placeholder="Enter your password or app password" style="border-color: #dee2e6;" required>
+                                     <div class="invalid-feedback small">
+                                         Password is required.
+                                     </div>
+                                 </div>
+                             </div>
+                             
+                             <!-- Server & Port Row -->
+                             <div class="row mb-3">
+                                 <div class="col-md-8">
+                                     <label for="imapServer" class="form-label small">IMAP Server</label>
+                                     <select class="form-select form-select-sm" id="imapServer" style="border-color: #dee2e6;">
+                                         <option value="">Auto-detect</option>
+                                         <option value="imap.gmail.com">Gmail (imap.gmail.com)</option>
+                                         <option value="outlook.office365.com">Outlook (outlook.office365.com)</option>
+                                         <option value="imap.mail.yahoo.com">Yahoo (imap.mail.yahoo.com)</option>
+                                         <option value="imap.aol.com">AOL (imap.aol.com)</option>
+                                         <option value="imap.mail.me.com">iCloud (imap.mail.me.com)</option>
+                                         <option value="imap.zoho.com">Zoho (imap.zoho.com)</option>
+                                         <option value="custom">Custom...</option>
+                                     </select>
+                                 </div>
+                                 <div class="col-md-4">
+                                     <label for="imapPort" class="form-label small">Port</label>
+                                     <input type="number" class="form-control form-control-sm" id="imapPort" placeholder="993" value="993" min="1" max="65535" style="border-color: #dee2e6;">
+                                 </div>
+                             </div>
+                             
+                             <!-- SSL Row -->
+                             <div class="row mb-3">
+                                 <div class="col-md-6">
+                                     <div class="form-check">
+                                         <input class="form-check-input" type="checkbox" id="imapUseSSL" checked>
+                                         <label class="form-check-label small" for="imapUseSSL">
+                                             Use SSL/TLS
+                                         </label>
+                                     </div>
+                                 </div>
+                             </div>
 
-
-
-
+                             <!-- Simple Buttons Row -->
+                             <div class="row mt-3">
+                                 <div class="col-md-6">
+                                     <button type="button" id="testImapBtn" class="btn btn-sm w-100" style="background-color: white; color: #6c757d; border: 1px solid #dee2e6;">
+                                         <i class="fas fa-plug me-1"></i>Test Connection
+                                     </button>
+                                 </div>
+                                 <div class="col-md-6">
+                                     <button type="button" id="startImapBtn" class="btn btn-sm w-100" style="background-color: #55729b; color: white; border: 1px solid #224577;">
+                                         <i class="fas fa-download me-1"></i>Start Scraping
+                                     </button>
+                                 </div>
+                             </div>
+                         </form>
+                     </div>
+                 </div>
+             </div>
+        </div>
     </div>
 </div>
 
 <script>
-// Form validation and submission handling
+// Form validation and submission handling for Gmail API
 (function() {
     'use strict';
     window.addEventListener('load', function() {
@@ -82,7 +183,7 @@
     }, false);
 })();
 
-// Email validation
+// Email validation for Gmail API
 document.getElementById('email').addEventListener('input', function() {
     const email = this.value;
     const gmailPattern = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
@@ -94,13 +195,136 @@ document.getElementById('email').addEventListener('input', function() {
     }
 });
 
-// Debug: Log form submission attempts
+// IMAP Functions
+function autoDetectImapServer() {
+    const email = document.getElementById('imapEmail').value;
+    const serverSelect = document.getElementById('imapServer');
+    
+    if (email && email.includes('@')) {
+        const domain = email.split('@')[1].toLowerCase();
+        
+        // Common IMAP servers
+        const servers = {
+            'gmail.com': 'imap.gmail.com',
+            'outlook.com': 'outlook.office365.com',
+            'hotmail.com': 'outlook.office365.com',
+            'yahoo.com': 'imap.mail.yahoo.com',
+            'aol.com': 'imap.aol.com',
+            'icloud.com': 'imap.mail.me.com',
+            'zoho.com': 'imap.zoho.com',
+            'yandex.com': 'imap.yandex.com'
+        };
+        
+        if (servers[domain]) {
+            serverSelect.value = servers[domain];
+        }
+    }
+}
+
+function getImapFormData() {
+    const email = document.getElementById('imapEmail').value;
+    const password = document.getElementById('imapPassword').value;
+    const server = document.getElementById('imapServer').value;
+    const port = document.getElementById('imapPort').value;
+    const folder = document.getElementById('imapFolder').value;
+    const useSSL = document.getElementById('imapUseSSL').checked;
+    
+    if (!email || !password) {
+        alert('Email address and password are required');
+        return null;
+    }
+    
+    return {
+        email_address: email,
+        password: password,
+        imap_server: server || null,
+        imap_port: port ? parseInt(port) : null,
+        folder: folder,
+        use_ssl: useSSL
+    };
+}
+
+function testImapConnection() {
+    const formData = getImapFormData();
+    if (!formData) return;
+    
+    const btn = document.getElementById('testImapBtn');
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Testing...';
+    btn.disabled = true;
+    
+    fetch('/test_imap_connection', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert(`✅ IMAP connection successful!\nServer: ${data.imap_server}\nFolders: ${data.folders.length} available\nINBOX: ${data.inbox_count} emails`);
+        } else {
+            alert(`❌ IMAP connection failed!\nError: ${data.error}`);
+        }
+    })
+    .catch(error => {
+        alert(`❌ Network error: ${error.message}`);
+    })
+    .finally(() => {
+        btn.innerHTML = '<i class="fas fa-plug me-2"></i>Test Connection';
+        btn.disabled = false;
+    });
+}
+
+function startImapScraping() {
+    const formData = getImapFormData();
+    if (!formData) return;
+    
+    const btn = document.getElementById('startImapBtn');
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Starting...';
+    btn.disabled = true;
+    
+    fetch('/imap_scrape', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert(`✅ IMAP scraping successful!\nScraped: ${data.emails_count} emails\nFile: ${data.filename}\n\nRedirecting to dashboard...`);
+            // Redirect to dashboard
+            window.location.href = '/dashboard';
+        } else {
+            alert(`❌ IMAP scraping failed!\nError: ${data.error}`);
+        }
+    })
+    .catch(error => {
+        alert(`❌ Network error: ${error.message}`);
+    })
+    .finally(() => {
+        btn.innerHTML = '<i class="fas fa-download me-2"></i>Start IMAP Scraping';
+        btn.disabled = false;
+    });
+}
+
+// Event listeners for IMAP
 document.addEventListener('DOMContentLoaded', function() {
-    const form = document.querySelector('form');
+    // Auto-detect server when email changes
+    document.getElementById('imapEmail').addEventListener('change', autoDetectImapServer);
+    
+    // IMAP button event listeners
+    document.getElementById('testImapBtn').addEventListener('click', testImapConnection);
+    document.getElementById('startImapBtn').addEventListener('click', startImapScraping);
+    
+    // Debug: Log form submission attempts for Gmail API
+    const form = document.querySelector('form[action*="authenticate"]');
     if (form) {
-        console.log('Form found:', form);
+        console.log('Gmail API form found:', form);
         form.addEventListener('submit', function(e) {
-            console.log('Form submission attempted');
+            console.log('Gmail API form submission attempted');
             console.log('Form action:', this.action);
             console.log('Form method:', this.method);
             console.log('Form valid:', this.checkValidity());

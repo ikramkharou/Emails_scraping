@@ -1,4 +1,4 @@
-# Gmail Scraper Pro 📧
+# MailRaw Source 📧
 
 A powerful Flask-based web application for extracting and scraping emails from Gmail with real-time terminal logging and a modern user interface.
 

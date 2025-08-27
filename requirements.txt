@@ -6,3 +6,7 @@ google-api-python-client==2.108.0
 python-dotenv==1.0.0
 requests==2.31.0
 beautifulsoup4==4.12.2
+# IMAP libraries (imaplib and email are part of Python standard library)
+# Additional useful libraries for email processing
+lxml==4.9.3
+html2text==2020.1.16

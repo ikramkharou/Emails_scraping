@@ -14,6 +14,7 @@ import pickle
 from datetime import datetime
 import re
 from dotenv import load_dotenv
+from imap_scraper import create_imap_scraper, IMAPScraper
 
 # Load environment variables
 load_dotenv()
@@ -580,7 +581,8 @@ def search_and_scrape_emails():
                 break
         
         message_ids = [msg['id'] for msg in all_messages]
-        add_log_to_stream(f'📊 Total emails found: {len(all_messages)}', 'success')
+        total_emails_found = len(all_messages)
+        add_log_to_stream(f'📊 Total emails found: {total_emails_found}', 'success')
         
         # Step 2: Scrape all found emails
         add_log_to_stream(f'🔄 Starting extraction of {len(message_ids)} emails...', 'processing')
@@ -790,6 +792,205 @@ def force_clear_auth():
         flash('ℹ️ No authentication files found to clear.', 'info')
     
     return redirect(url_for('index'))
+
+# IMAP Scraping Routes
+@app.route('/imap_scrape', methods=['POST'])
+def imap_scrape():
+    """Scrape emails using IMAP protocol."""
+    try:
+        data = request.get_json()
+        email_address = data.get('email_address')
+        password = data.get('password')
+        folder = data.get('folder', 'INBOX')
+        search_criteria = data.get('search_criteria', 'ALL')
+        max_emails = data.get('max_emails', None)
+        imap_server = data.get('imap_server', None)
+        imap_port = data.get('imap_port', None)
+        use_ssl = data.get('use_ssl', True)
+        
+        if not email_address or not password:
+            return jsonify({'error': 'Email address and password are required'}), 400
+        
+        # Add initial log
+        add_log_to_stream('🚀 Starting IMAP email extraction...', 'info')
+        add_log_to_stream(f'📧 Connecting to {email_address}...', 'processing')
+        
+        # Create IMAP scraper
+        scraper = create_imap_scraper(
+            email_address=email_address,
+            password=password,
+            imap_server=imap_server,
+            imap_port=imap_port,
+            use_ssl=use_ssl
+        )
+        
+        if not scraper:
+            add_log_to_stream('❌ Failed to connect to IMAP server', 'error')
+            return jsonify({'error': 'Failed to connect to IMAP server. Check your credentials and server settings.'}), 500
+        
+        add_log_to_stream(f'✅ Connected to IMAP server: {scraper.imap_server}', 'success')
+        
+        # Get available folders
+        folders = scraper.get_folders()
+        add_log_to_stream(f'📁 Available folders: {", ".join(folders[:5])}{"..." if len(folders) > 5 else ""}', 'info')
+        
+        # Progress callback function
+        def progress_callback(message, log_type):
+            add_log_to_stream(message, log_type)
+        
+        # Scrape emails
+        add_log_to_stream(f'🔍 Searching emails in folder: {folder}', 'processing')
+        emails = scraper.scrape_emails(
+            folder=folder,
+            search_criteria=search_criteria,
+            max_emails=max_emails,
+            progress_callback=progress_callback
+        )
+        
+        if not emails:
+            add_log_to_stream('⚠️ No emails found or failed to scrape', 'warning')
+            scraper.disconnect()
+            return jsonify({'error': 'No emails found or failed to scrape'}), 404
+        
+        # Save to file
+        add_log_to_stream('💾 Saving scraped data to file...', 'processing')
+        filename = scraper.save_emails_to_file(emails)
+        
+        if filename:
+            add_log_to_stream(f'✅ Data saved to: {filename}', 'success')
+        else:
+            add_log_to_stream('⚠️ Failed to save data to file', 'warning')
+        
+        # Disconnect
+        scraper.disconnect()
+        add_log_to_stream('🔌 Disconnected from IMAP server', 'info')
+        
+        return jsonify({
+            'success': True,
+            'emails_count': len(emails),
+            'user_email': email_address,
+            'filename': filename,
+            'imap_server': scraper.imap_server,
+            'folder': folder,
+            'emails': emails[:20],  # Return first 20 emails for preview
+            'message': f'Successfully scraped {len(emails)} emails using IMAP'
+        })
+        
+    except Exception as e:
+        add_log_to_stream(f'❌ IMAP scraping error: {str(e)}', 'error')
+        return jsonify({'error': f'IMAP scraping error: {str(e)}'}), 500
+
+@app.route('/test_imap_connection', methods=['POST'])
+def test_imap_connection():
+    """Test IMAP connection without scraping."""
+    try:
+        data = request.get_json()
+        email_address = data.get('email_address')
+        password = data.get('password')
+        imap_server = data.get('imap_server', None)
+        imap_port = data.get('imap_port', None)
+        use_ssl = data.get('use_ssl', True)
+        
+        if not email_address or not password:
+            return jsonify({'error': 'Email address and password are required'}), 400
+        
+        add_log_to_stream(f'🔍 Testing IMAP connection to {email_address}...', 'processing')
+        
+        # Create IMAP scraper
+        scraper = create_imap_scraper(
+            email_address=email_address,
+            password=password,
+            imap_server=imap_server,
+            imap_port=imap_port,
+            use_ssl=use_ssl
+        )
+        
+        if not scraper:
+            add_log_to_stream('❌ IMAP connection test failed', 'error')
+            return jsonify({'error': 'Failed to connect to IMAP server'}), 500
+        
+        # Get folders
+        folders = scraper.get_folders()
+        
+        # Get email count in INBOX
+        email_ids = scraper.search_emails('INBOX', 'ALL')
+        inbox_count = len(email_ids)
+        
+        # Disconnect
+        scraper.disconnect()
+        
+        add_log_to_stream('✅ IMAP connection test successful', 'success')
+        
+        return jsonify({
+            'success': True,
+            'imap_server': scraper.imap_server,
+            'folders': folders,
+            'inbox_count': inbox_count,
+            'message': f'Successfully connected to {scraper.imap_server}'
+        })
+        
+    except Exception as e:
+        add_log_to_stream(f'❌ IMAP connection test error: {str(e)}', 'error')
+        return jsonify({'error': f'IMAP connection test error: {str(e)}'}), 500
+
+@app.route('/get_imap_servers')
+def get_imap_servers():
+    """Get list of common IMAP servers."""
+    imap_servers = {
+        'gmail.com': {
+            'server': 'imap.gmail.com',
+            'port': 993,
+            'ssl': True,
+            'note': 'Requires App Password if 2FA is enabled'
+        },
+        'outlook.com': {
+            'server': 'outlook.office365.com',
+            'port': 993,
+            'ssl': True,
+            'note': 'Microsoft account'
+        },
+        'hotmail.com': {
+            'server': 'outlook.office365.com',
+            'port': 993,
+            'ssl': True,
+            'note': 'Microsoft account'
+        },
+        'yahoo.com': {
+            'server': 'imap.mail.yahoo.com',
+            'port': 993,
+            'ssl': True,
+            'note': 'Requires App Password'
+        },
+        'aol.com': {
+            'server': 'imap.aol.com',
+            'port': 993,
+            'ssl': True,
+            'note': 'AOL account'
+        },
+        'icloud.com': {
+            'server': 'imap.mail.me.com',
+            'port': 993,
+            'ssl': True,
+            'note': 'Apple ID with App Password'
+        },
+        'zoho.com': {
+            'server': 'imap.zoho.com',
+            'port': 993,
+            'ssl': True,
+            'note': 'Zoho Mail'
+        },
+        'yandex.com': {
+            'server': 'imap.yandex.com',
+            'port': 993,
+            'ssl': True,
+            'note': 'Yandex Mail'
+        }
+    }
+    
+    return jsonify({
+        'success': True,
+        'imap_servers': imap_servers
+    })
 
 @app.route('/reset_pagination')
 def reset_pagination():

@@ -1,0 +1,570 @@
+{% extends "base.html" %}
+
+{% block title %}Gmail Scraper Pro - Dashboard{% endblock %}
+
+{% block content %}
+ <!-- Header Section -->
+ <div class="row mb-5">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h1 class="display-5 fw-bold mb-2" style="color: #01214d;">
+                    <i class="fas fa-tachometer-alt me-3" style="color: #01214d;"></i>
+                    Dashboard
+                </h1>
+                <p class="lead text-muted mb-0">Manage your Gmail data extraction</p>
+            </div>
+         
+        </div>
+    </div>
+</div>
+
+ <!-- Stats Cards -->
+ <div class="row mb-5 g-4">
+         <div class="col-md-3">
+         <div class="card border-0 bg-white h-100">
+             <div class="card-body text-center p-4">
+                 <div class="mb-3">
+                     <i class="fas fa-envelope fa-2x text-primary"></i>
+                 </div>
+                 <h3 class="text-dark fw-bold mb-2" id="totalEmails">-</h3>
+                 <p class="text-muted mb-0">Total Emails</p>
+             </div>
+         </div>
+     </div>
+     
+     <div class="col-md-3">
+         <div class="card border-0 bg-white h-100">
+             <div class="card-body text-center p-4">
+                 <div class="mb-3">
+                     <i class="fas fa-download fa-2x text-success"></i>
+                 </div>
+                 <h3 class="text-dark fw-bold mb-2" id="scrapedEmails">-</h3>
+                 <p class="text-muted mb-0">Scraped Emails</p>
+             </div>
+         </div>
+     </div>
+     
+     <div class="col-md-3">
+         <div class="card border-0 bg-white h-100">
+             <div class="card-body text-center p-4">
+                 <div class="mb-3">
+                     <i class="fas fa-clock fa-2x text-warning"></i>
+                 </div>
+                 <h3 class="text-dark fw-bold mb-2" id="lastScrape">-</h3>
+                 <p class="text-muted mb-0">Last Scrape</p>
+             </div>
+         </div>
+     </div>
+     
+     <div class="col-md-3">
+         <div class="card border-0 bg-white h-100">
+             <div class="card-body text-center p-4">
+                 <div class="mb-3">
+                     <i class="fas fa-shield-alt fa-2x text-info"></i>
+                 </div>
+                 <h3 class="text-dark fw-bold mb-2" id="status">Active</h3>
+                 <p class="text-muted mb-0">Status</p>
+             </div>
+         </div>
+     </div>
+</div>
+
+ <!-- Combined Actions and Terminal Section -->
+ <div class="row mb-5">
+    <div class="col-12">
+        <div class="card bg-white">
+            
+            <div class="card-body p-4">
+                <!-- Action Buttons -->
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <div class="d-grid">
+                                                         <button id="scrapeBtn" class="btn btn-lg btn-custom-primary">
+                                 <i class="fas fa-search me-2"></i>
+                                 Search & Scrape All Emails
+                             </button>
+                        </div>
+                        <div class="form-text mt-2 text-muted">
+                            <i class="fas fa-info-circle me-1"></i>
+                            Extract all emails from your inbox with full content
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="d-grid">
+                                                         <button id="checkPermissionsBtn" class="btn btn-outline-secondary btn-lg btn-custom-outline">
+                                 <i class="fas fa-key me-2"></i>
+                                 Check Permissions
+                             </button>
+                        </div>
+                        <div class="form-text mt-2 text-muted">
+                            <i class="fas fa-info-circle me-1"></i>
+                            Verify your current Gmail API permissions
+                        </div>
+                    </div>
+                </div>
+
+                                 <!-- Live Terminal -->
+                 <div id="terminalCard">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="mb-0 text-dark">
+                            <i class="fas fa-terminal me-2 text-success"></i>
+                            Live Extraction Terminal
+                        </h5>
+                        <div class="d-flex gap-2">
+                            <button id="clearTerminalBtn" class="btn btn-sm btn-outline-secondary">
+                                <i class="fas fa-trash me-1"></i>Clear
+                            </button>
+                            <button id="copyTerminalBtn" class="btn btn-sm btn-outline-secondary">
+                                <i class="fas fa-copy me-1"></i>Copy
+                            </button>
+                        </div>
+                    </div>
+                    <div id="terminalOutput" class="terminal-window-simple">
+                        <div class="terminal-content-simple" id="terminalContent">
+                            <div class="terminal-line-simple">
+                                <span class="terminal-prompt-simple">$</span>
+                                <span class="terminal-text-simple">Ready to start extraction...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+ <!-- Progress Section -->
+ <div class="row mb-5">
+    <div class="col-12">
+        <div class="card" id="progressCard" style="display: none;">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-spinner fa-spin me-2"></i>
+                    Extraction Progress
+                </h5>
+            </div>
+            <div class="card-body p-4">
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="text-muted">Processing emails...</span>
+                        <span class="text-muted" id="progressText">0%</span>
+                    </div>
+                    <div class="progress">
+                        <div class="progress-bar" id="progressBar" role="progressbar" style="width: 0%"></div>
+                    </div>
+                </div>
+                <div id="progressDetails" class="text-muted small"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+   <!-- Results Section -->
+  <div class="row mb-5">
+     <div class="col-12">
+         <div class="card bg-white" id="resultsCard" style="display: none;">
+             <div class="card-body p-4">
+                                  <h5 class="mb-3">
+                     <i class="fas fa-check-circle me-2 text-success"></i>
+                     Extraction Results
+                 </h5>
+                 <div id="resultsContent"></div>
+                <div class="mt-4" id="downloadSection" style="display: none;">
+                    <div class="d-grid">
+                        <a id="downloadBtn" href="#" class="btn btn-success btn-lg">
+                            <i class="fas fa-download me-2"></i>
+                            Download JSON File
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+ <!-- Email Preview -->
+ <div class="row">
+    <div class="col-12">
+        <div class="card" id="previewCard" style="display: none;">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-eye me-2"></i>
+                    Email Preview
+                </h5>
+            </div>
+            <div class="card-body p-4">
+                <div class="table-responsive">
+                    <table class="table table-hover" id="emailTable">
+                        <thead>
+                            <tr>
+                                <th>From</th>
+                                <th>Subject</th>
+                                <th>Date</th>
+                                <th>Format</th>
+                                <th>Size</th>
+                            </tr>
+                        </thead>
+                        <tbody id="emailTableBody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+let isScraping = false;
+
+// Initialize dashboard
+document.addEventListener('DOMContentLoaded', function() {
+    updateStats();
+    setupEventListeners();
+});
+
+function setupEventListeners() {
+    document.getElementById('scrapeBtn').addEventListener('click', startScraping);
+    document.getElementById('checkPermissionsBtn').addEventListener('click', checkPermissions);
+    document.getElementById('clearTerminalBtn').addEventListener('click', clearTerminal);
+    document.getElementById('copyTerminalBtn').addEventListener('click', copyTerminal);
+}
+
+function updateStats() {
+    // Update dashboard stats
+    document.getElementById('lastScrape').textContent = 'Never';
+    document.getElementById('status').textContent = 'Ready';
+}
+
+function startScraping() {
+    if (isScraping) return;
+    
+    isScraping = true;
+    const scrapeBtn = document.getElementById('scrapeBtn');
+    const progressCard = document.getElementById('progressCard');
+    const resultsCard = document.getElementById('resultsCard');
+    const previewCard = document.getElementById('previewCard');
+    const terminalCard = document.getElementById('terminalCard');
+    
+         // Clear terminal and show initial message
+     clearTerminal();
+    
+    // Update UI
+    scrapeBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Scraping...';
+    scrapeBtn.disabled = true;
+    progressCard.style.display = 'block';
+    resultsCard.style.display = 'none';
+    previewCard.style.display = 'none';
+    
+    // Show progress
+    updateProgress(0, 'Starting extraction...');
+    
+    // Add initial terminal logs
+    addTerminalLog('🚀 Starting Gmail extraction process...', 'info');
+    addTerminalLog('🔧 Initializing Gmail API connection...', 'processing');
+    
+           // Connect to real-time log stream
+       const eventSource = new EventSource('/stream_logs');
+       eventSource.onmessage = function(event) {
+           const data = JSON.parse(event.data);
+           // Skip heartbeat messages
+           if (data.message && data.type !== 'heartbeat') {
+               addTerminalLog(data.message, data.type);
+           }
+       };
+       
+       eventSource.onerror = function(event) {
+           // Don't show error messages for normal connection issues
+           console.log('SSE connection error (normal during development)');
+       };
+       
+       eventSource.onopen = function(event) {
+           addTerminalLog('✅ Connected to real-time log stream', 'success');
+       };
+    
+    // Make the actual API call immediately
+    fetch('/search_and_scrape_emails')
+        .then(response => response.json())
+        .then(data => {
+            isScraping = false;
+            
+            if (data.success) {
+                addTerminalLog('📊 Extraction Summary:', 'info');
+                addTerminalLog(`   ✅ Successful: ${data.success_count || data.emails_count}`, 'success');
+                addTerminalLog(`   ❌ Failed: ${data.error_count || 0}`, 'warning');
+                addTerminalLog(`   📧 Total processed: ${data.total_emails}`, 'info');
+                addTerminalLog('💾 Saving extracted data to file...', 'processing');
+                addTerminalLog(`✅ Data saved to: ${data.filename}`, 'success');
+                addTerminalLog('🎉 Extraction completed successfully!', 'complete');
+                showSuccess(data);
+            } else {
+                addTerminalLog('❌ Extraction failed!', 'error');
+                addTerminalLog(`Error: ${data.error}`, 'error');
+                showError(data.error);
+            }
+        })
+        .catch(error => {
+            isScraping = false;
+            addTerminalLog('❌ Network error occurred!', 'error');
+            addTerminalLog(`Error: ${error.message}`, 'error');
+            showError('Network error: ' + error.message);
+        })
+        .finally(() => {
+            // Close the event source
+            if (eventSource) {
+                eventSource.close();
+            }
+            scrapeBtn.innerHTML = '<i class="fas fa-search me-2"></i>Search & Scrape All Emails';
+            scrapeBtn.disabled = false;
+            progressCard.style.display = 'none';
+        });
+}
+
+function updateProgress(percent, message) {
+    const progressBar = document.getElementById('progressBar');
+    const progressText = document.getElementById('progressText');
+    const progressDetails = document.getElementById('progressDetails');
+    
+    progressBar.style.width = percent + '%';
+    progressText.textContent = percent + '%';
+    progressDetails.textContent = message;
+}
+
+function showSuccess(data) {
+    const resultsCard = document.getElementById('resultsCard');
+    const resultsContent = document.getElementById('resultsContent');
+    const downloadSection = document.getElementById('downloadSection');
+    const downloadBtn = document.getElementById('downloadBtn');
+    const previewCard = document.getElementById('previewCard');
+    
+    // Update results
+    resultsContent.innerHTML = `
+        <div class="alert alert-success">
+            <h6><i class="fas fa-check-circle me-2"></i>Extraction Successful!</h6>
+            <p class="mb-2">Successfully scraped <strong>${data.emails_count}</strong> emails from <strong>${data.total_emails}</strong> total emails.</p>
+            <p class="mb-0">User: <strong>${data.user_email}</strong></p>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card bg-light">
+                    <div class="card-body">
+                        <h6><i class="fas fa-chart-bar me-2"></i>Statistics</h6>
+                        <ul class="list-unstyled mb-0">
+                            <li><strong>Total Emails:</strong> ${data.total_emails}</li>
+                            <li><strong>Scraped Emails:</strong> ${data.emails_count}</li>
+                            <li><strong>Success Rate:</strong> ${Math.round((data.emails_count / data.total_emails) * 100)}%</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card bg-light">
+                    <div class="card-body">
+                        <h6><i class="fas fa-file-alt me-2"></i>File Information</h6>
+                        <ul class="list-unstyled mb-0">
+                            <li><strong>Filename:</strong> ${data.filename}</li>
+                            <li><strong>Format:</strong> JSON</li>
+                            <li><strong>Status:</strong> Ready for download</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    // Setup download
+    downloadBtn.href = '/download/' + data.filename;
+    downloadSection.style.display = 'block';
+    
+    // Show preview
+    if (data.emails && data.emails.length > 0) {
+        showEmailPreview(data.emails);
+        previewCard.style.display = 'block';
+    }
+    
+    resultsCard.style.display = 'block';
+    
+    // Update stats
+    document.getElementById('totalEmails').textContent = data.total_emails;
+    document.getElementById('scrapedEmails').textContent = data.emails_count;
+    document.getElementById('lastScrape').textContent = new Date().toLocaleTimeString();
+}
+
+function showEmailPreview(emails) {
+    const tableBody = document.getElementById('emailTableBody');
+    tableBody.innerHTML = '';
+    
+    emails.slice(0, 10).forEach(email => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${email.headers.From || 'Unknown'}</td>
+            <td>${email.headers.Subject || 'No Subject'}</td>
+            <td>${new Date(parseInt(email.internalDate)).toLocaleDateString()}</td>
+            <td><span class="badge bg-${email.format === 'full' ? 'success' : 'warning'}">${email.format}</span></td>
+            <td>${email.sizeEstimate || 0} bytes</td>
+        `;
+        tableBody.appendChild(row);
+    });
+}
+
+function showError(error) {
+    const resultsCard = document.getElementById('resultsCard');
+    const resultsContent = document.getElementById('resultsContent');
+    
+    resultsContent.innerHTML = `
+        <div class="alert alert-danger">
+            <h6><i class="fas fa-exclamation-triangle me-2"></i>Extraction Failed</h6>
+            <p class="mb-0">${error}</p>
+        </div>
+    `;
+    
+    resultsCard.style.display = 'block';
+}
+
+function checkPermissions() {
+    const btn = document.getElementById('checkPermissionsBtn');
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Checking...';
+    btn.disabled = true;
+    
+    fetch('/check_permissions')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showPermissionsResult(data);
+            } else {
+                showError(data.error);
+            }
+        })
+        .catch(error => {
+            showError('Network error: ' + error.message);
+        })
+        .finally(() => {
+            btn.innerHTML = '<i class="fas fa-key me-2"></i>Check Permissions';
+            btn.disabled = false;
+        });
+}
+
+function showPermissionsResult(data) {
+    const resultsCard = document.getElementById('resultsCard');
+    const resultsContent = document.getElementById('resultsContent');
+    
+    const permissions = data.permissions;
+    const statusClass = data.can_get_full_content ? 'success' : 'warning';
+    const statusIcon = data.can_get_full_content ? 'check-circle' : 'exclamation-triangle';
+    
+    resultsContent.innerHTML = `
+        <div class="alert alert-${statusClass}">
+            <h6><i class="fas fa-${statusIcon} me-2"></i>${data.message}</h6>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <h6><i class="fas fa-shield-alt me-2"></i>Permission Status</h6>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Full Access
+                        <span class="badge bg-${permissions.has_full_access ? 'success' : 'secondary'}">
+                            ${permissions.has_full_access ? '✓' : '✗'}
+                        </span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Modify Access
+                        <span class="badge bg-${permissions.has_modify_access ? 'success' : 'secondary'}">
+                            ${permissions.has_modify_access ? '✓' : '✗'}
+                        </span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Metadata Access
+                        <span class="badge bg-${permissions.has_metadata_access ? 'success' : 'secondary'}">
+                            ${permissions.has_metadata_access ? '✓' : '✗'}
+                        </span>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-md-6">
+                <h6><i class="fas fa-list me-2"></i>Granted Scopes</h6>
+                <div class="bg-light p-3 rounded">
+                    <small class="text-muted">
+                        ${permissions.granted_scopes.join('<br>')}
+                    </small>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    resultsCard.style.display = 'block';
+}
+
+// Terminal Functions
+function addTerminalLog(message, type = 'info') {
+    const terminalContent = document.getElementById('terminalContent');
+    const timestamp = new Date().toLocaleTimeString();
+    
+    // Don't add empty messages
+    if (!message || message.trim() === '') {
+        return;
+    }
+    
+    const line = document.createElement('div');
+    line.className = 'terminal-line-simple';
+    
+    const prompt = document.createElement('span');
+    prompt.className = 'terminal-prompt-simple';
+    prompt.textContent = '$';
+    
+    const text = document.createElement('span');
+    text.className = `terminal-text-simple ${type}`;
+    text.textContent = `[${timestamp}] ${message}`;
+    
+    line.appendChild(prompt);
+    line.appendChild(text);
+    terminalContent.appendChild(line);
+    
+    // Auto-scroll to bottom
+    terminalContent.scrollTop = terminalContent.scrollHeight;
+}
+
+function clearTerminal() {
+    const terminalContent = document.getElementById('terminalContent');
+    terminalContent.innerHTML = `
+        <div class="terminal-line-simple">
+            <span class="terminal-prompt-simple">$</span>
+            <span class="terminal-text-simple">Ready to start extraction...</span>
+        </div>
+    `;
+}
+
+function copyTerminal() {
+    const terminalContent = document.getElementById('terminalContent');
+    const text = terminalContent.innerText;
+    
+    navigator.clipboard.writeText(text).then(() => {
+        // Show a temporary success message
+        const originalText = document.getElementById('copyTerminalBtn').innerHTML;
+        document.getElementById('copyTerminalBtn').innerHTML = '<i class="fas fa-check me-1"></i>Copied!';
+        
+        setTimeout(() => {
+            document.getElementById('copyTerminalBtn').innerHTML = originalText;
+        }, 2000);
+    }).catch(err => {
+        console.error('Failed to copy: ', err);
+    });
+}
+
+// Enhanced progress updates with terminal logging
+function updateProgress(percent, message) {
+    const progressBar = document.getElementById('progressBar');
+    const progressText = document.getElementById('progressText');
+    const progressDetails = document.getElementById('progressDetails');
+    
+    progressBar.style.width = percent + '%';
+    progressText.textContent = percent + '%';
+    progressDetails.textContent = message;
+    
+    // Add progress to terminal
+    if (percent > 0) {
+        addTerminalLog(`Progress: ${percent}% - ${message}`, 'processing');
+    }
+}
+</script>
+{% endblock %}

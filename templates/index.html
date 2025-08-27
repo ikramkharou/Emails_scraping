@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+
+{% block title %}Gmail Scraper Pro - Authentication{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8 col-xl-6">
+                 <!-- Hero Section -->
+         <div class="text-center mb-5">
+            <div class="icon-large">
+                <i class="fas fa-envelope-open-text" style="color: #01214d;"></i>
+            </div>
+            <h1 class="display-4 fw-bold mb-3" style="color: #01214d;">Gmail Scraper Pro</h1>
+            <p class="lead text-muted mb-0">Professional Email Data Extraction Tool</p>
+            <p class="text-secondary">Extract, analyze, and export your Gmail data with enterprise-grade security</p>
+        </div>
+
+                 <!-- Main Authentication Card -->
+         <div class="card">
+            <div class="card-body p-4">
+                <form method="POST" action="{{ url_for('authenticate') }}" class="needs-validation" novalidate>
+                    <div class="mb-4">
+                        <label for="email" class="form-label">
+                            Gmail Address
+                        </label>
+                        <input 
+                            type="email" 
+                            class="form-control" 
+                            id="email" 
+                            name="email" 
+                            placeholder="Enter your Gmail address"
+                            required
+                            pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+                        >
+                        <div class="form-text">
+                            This will be used to identify your account during the scraping process
+                        </div>
+                        <div class="invalid-feedback">
+                            Please enter a valid Gmail address.
+                        </div>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-lg" style="background-color: #55729b; color: white; border-color: #224577;">
+                            Start Authentication
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+
+
+
+
+
+    </div>
+</div>
+
+<script>
+// Form validation and submission handling
+(function() {
+    'use strict';
+    window.addEventListener('load', function() {
+        var forms = document.getElementsByClassName('needs-validation');
+        var validation = Array.prototype.filter.call(forms, function(form) {
+            form.addEventListener('submit', function(event) {
+                if (form.checkValidity() === false) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                } else {
+                    // Form is valid, show loading state on submit button
+                    const submitBtn = form.querySelector('button[type="submit"]');
+                    if (submitBtn) {
+                        submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Starting Authentication...';
+                        submitBtn.disabled = true;
+                    }
+                }
+                form.classList.add('was-validated');
+            }, false);
+        });
+    }, false);
+})();
+
+// Email validation
+document.getElementById('email').addEventListener('input', function() {
+    const email = this.value;
+    const gmailPattern = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
+    
+    if (email && !gmailPattern.test(email)) {
+        this.setCustomValidity('Please enter a valid Gmail address');
+    } else {
+        this.setCustomValidity('');
+    }
+});
+
+// Debug: Log form submission attempts
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.querySelector('form');
+    if (form) {
+        console.log('Form found:', form);
+        form.addEventListener('submit', function(e) {
+            console.log('Form submission attempted');
+            console.log('Form action:', this.action);
+            console.log('Form method:', this.method);
+            console.log('Form valid:', this.checkValidity());
+        });
+    }
+});
+</script>
+{% endblock %}

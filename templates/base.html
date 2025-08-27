@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Gmail Scraper Pro{% endblock %}</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome 6 -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary-color: #64748b;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --light-bg: #f8fafc;
+            --dark-bg: #1e293b;
+            --border-color: #e2e8f0;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f8f9fa;
+            min-height: 100vh;
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        .main-container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header Styles */
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: var(--shadow-sm);
+            padding: 1rem 0;
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: #01214d !important;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .navbar-brand i {
+            font-size: 1.8rem;
+            color: #01214d;
+        }
+
+        /* Card Styles */
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
+            box-shadow: var(--shadow-md);
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+
+
+
+        .card-header {
+            background: #f1f3f4;
+            color: var(--text-primary);
+            border: none;
+            padding: 1.5rem;
+            font-weight: 600;
+        }
+
+        .card-body {
+            padding: 2rem;
+        }
+
+        /* Button Styles */
+        .btn {
+            border-radius: 12px;
+            font-weight: 500;
+            padding: 0.75rem 1.5rem;
+            transition: all 0.3s ease;
+            border: none;
+        }
+
+
+
+        .btn-primary {
+            background: linear-gradient(135deg, #6c757d, #495057);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #495057, #6c757d);
+            transform: translateY(0px);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #10b981, #059669);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .btn-success:hover {
+            background: linear-gradient(135deg, #059669, #10b981);
+            transform: translateY(0px);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .btn-warning:hover {
+            background: linear-gradient(135deg, #d97706, #f59e0b);
+            transform: translateY(0px);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .btn-danger:hover {
+            background: linear-gradient(135deg, #dc2626, #ef4444);
+            transform: translateY(0px);
+            box-shadow: var(--shadow-sm);
+        }
+
+        /* Form Styles */
+        .form-control, .form-select {
+            border-radius: 12px;
+            border: 2px solid var(--border-color);
+            padding: 0.75rem 1rem;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+            background: white;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        /* Alert Styles */
+        .alert {
+            border-radius: 12px;
+            border: none;
+            padding: 1rem 1.5rem;
+            font-weight: 500;
+            backdrop-filter: blur(10px);
+        }
+
+        .alert-success {
+            background: #e8f5e8;
+            color: #2d5a2d;
+            border-left: 4px solid #4a7c59;
+            border-radius: 8px;
+            padding: 12px 16px;
+        }
+
+        .alert-warning {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning-color);
+            border-left: 4px solid var(--warning-color);
+        }
+
+        .alert-danger {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger-color);
+            border-left: 4px solid var(--danger-color);
+        }
+
+        .alert-info {
+            background: #C4DAD2;
+            color: #2c3e50;
+            border-left: 4px solid #95a5a6;
+        }
+
+        /* Table Styles */
+        .table {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+        }
+
+        .table thead th {
+            background: linear-gradient(135deg, #f8fafc, #e2e8f0);
+            color: var(--text-primary);
+            border: none;
+            font-weight: 600;
+            padding: 1rem;
+        }
+
+        .table tbody tr {
+            transition: all 0.3s ease;
+        }
+
+        .table tbody tr:hover {
+            background: rgba(37, 99, 235, 0.05);
+        }
+
+        /* Progress Bar */
+        .progress {
+            height: 8px;
+            border-radius: 4px;
+            background: rgba(255, 255, 255, 0.2);
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            background: linear-gradient(90deg, var(--primary-color), var(--success-color));
+            border-radius: 4px;
+            transition: width 0.6s ease;
+        }
+
+        /* Loading Spinner */
+        .spinner-border {
+            width: 2rem;
+            height: 2rem;
+            border-width: 0.2em;
+        }
+
+        /* Badge Styles */
+        .badge {
+            border-radius: 8px;
+            font-weight: 500;
+            padding: 0.5rem 0.75rem;
+        }
+
+        /* Icon Styles */
+        .icon-large {
+            font-size: 3rem;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+        }
+
+        /* Animation Classes */
+        .fade-in {
+            animation: fadeIn 0.6s ease-in;
+        }
+
+        .slide-up {
+            animation: slideUp 0.6s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from { 
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to { 
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .card-body {
+                padding: 1.5rem;
+            }
+            
+            .btn {
+                padding: 0.625rem 1.25rem;
+            }
+            
+            .icon-large {
+                font-size: 2.5rem;
+            }
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(37, 99, 235, 0.5);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(37, 99, 235, 0.7);
+        }
+
+        /* Footer */
+        .footer {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid var(--border-color);
+            padding: 1rem 0;
+            margin-top: auto;
+        }
+
+        .footer-text {
+            color: var(--text-secondary);
+            text-align: center;
+            font-size: 0.875rem;
+        }
+
+        /* Terminal Styles */
+        .terminal-window {
+            background: #1e1e1e;
+            border-radius: 8px;
+            overflow: hidden;
+            font-family: 'Courier New', monospace;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        .terminal-header {
+            background: #2d2d2d;
+            padding: 8px 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #404040;
+        }
+
+        .terminal-title {
+            color: #e0e0e0;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .terminal-controls {
+            display: flex;
+            gap: 6px;
+        }
+
+        .terminal-control {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .terminal-control.minimize {
+            background: #ffbd2e;
+        }
+
+        .terminal-control.maximize {
+            background: #28ca42;
+        }
+
+        .terminal-control.close {
+            background: #ff5f56;
+        }
+
+        .terminal-content {
+            background: #1e1e1e;
+            color: #e0e0e0;
+            padding: 16px;
+            height: 400px;
+            overflow-y: auto;
+            font-size: 0.875rem;
+            line-height: 1.4;
+        }
+
+        .terminal-line {
+            margin-bottom: 4px;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .terminal-prompt {
+            color: #28ca42;
+            margin-right: 8px;
+            font-weight: bold;
+        }
+
+        .terminal-text {
+            color: #e0e0e0;
+            word-wrap: break-word;
+        }
+
+        .terminal-text.success {
+            color: #28ca42;
+        }
+
+        .terminal-text.warning {
+            color: #ffbd2e;
+        }
+
+        .terminal-text.error {
+            color: #ff5f56;
+        }
+
+        .terminal-text.info {
+            color: #5f9fff;
+        }
+
+        .terminal-text.processing {
+            color: #ff8c00;
+        }
+
+        .terminal-text.complete {
+            color: #00ff00;
+        }
+
+        /* Terminal scrollbar */
+        .terminal-content::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .terminal-content::-webkit-scrollbar-track {
+            background: #2d2d2d;
+        }
+
+        .terminal-content::-webkit-scrollbar-thumb {
+            background: #404040;
+            border-radius: 4px;
+        }
+
+        .terminal-content::-webkit-scrollbar-thumb:hover {
+            background: #505050;
+        }
+
+        /* Simplified Terminal Styles */
+        .terminal-window-simple {
+            background: #000000;
+            border: 1px solid #333333;
+            border-radius: 8px;
+            overflow: hidden;
+            font-family: 'Courier New', monospace;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .terminal-content-simple {
+            background: #000000;
+            color: #ffffff;
+            padding: 16px;
+            height: 300px;
+            overflow-y: auto;
+            font-size: 0.875rem;
+            line-height: 1.4;
+        }
+
+        .terminal-line-simple {
+            margin-bottom: 4px;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .terminal-prompt-simple {
+            color: #00ff00;
+            margin-right: 8px;
+            font-weight: bold;
+        }
+
+        .terminal-text-simple {
+            color: #ffffff;
+            word-wrap: break-word;
+        }
+
+        .terminal-text-simple.success {
+            color: #00ff00;
+        }
+
+        .terminal-text-simple.warning {
+            color: #ffff00;
+        }
+
+        .terminal-text-simple.error {
+            color: #ff0000;
+        }
+
+        .terminal-text-simple.info {
+            color: #00ffff;
+        }
+
+        .terminal-text-simple.processing {
+            color: #ffa500;
+        }
+
+        .terminal-text-simple.complete {
+            color: #00ff00;
+        }
+
+        /* Simplified terminal scrollbar */
+        .terminal-content-simple::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .terminal-content-simple::-webkit-scrollbar-track {
+            background: #333333;
+        }
+
+        .terminal-content-simple::-webkit-scrollbar-thumb {
+            background: #666666;
+            border-radius: 4px;
+        }
+
+        .terminal-content-simple::-webkit-scrollbar-thumb:hover {
+            background: #999999;
+        }
+
+        /* Custom Header Styles */
+        .custom-header {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+            background-color: #01214d !important;
+        }
+
+        /* Custom Button Styles */
+        .btn-custom-primary {
+            background-color: #406586 !important;
+            border-color: #406586 !important;
+            color: white !important;
+        }
+
+        .btn-custom-primary:hover {
+            background-color: #345a73 !important;
+            border-color: #345a73 !important;
+            color: white !important;
+        }
+
+        .btn-custom-outline {
+            border-color: #406586 !important;
+            color: #406586 !important;
+        }
+
+        .btn-custom-outline:hover {
+            background-color: #406586 !important;
+            border-color: #406586 !important;
+            color: white !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <!-- Navigation -->
+        <nav class="navbar navbar-expand-lg">
+            <div class="container">
+                <a class="navbar-brand" href="{{ url_for('index') }}">
+                    <i class="fas fa-envelope-open-text"></i>
+                    Gmail Scraper Pro
+                </a>
+                
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('index') }}">
+                                <i class="fas fa-home me-1"></i>Home
+                            </a>
+                        </li>
+                        {% if session.get('credentials') %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('dashboard') }}">
+                                <i class="fas fa-tachometer-alt me-1"></i>Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('clear_auth') }}">
+                                <i class="fas fa-sign-out-alt me-1"></i>Logout
+                            </a>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="flex-grow-1 py-5">
+            <div class="container">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                                                         <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show" role="alert">
+                                <i class="fas fa-{{ 'exclamation-triangle' if category == 'error' else 'info-circle' }} me-2"></i>
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+
+                {% block content %}{% endblock %}
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="container">
+                <p class="footer-text">
+                    <i class="fas fa-shield-alt me-1"></i>
+                    Secure Gmail Scraping Tool | Built with ❤️ using Flask & Gmail API
+                </p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+         <script>
+
+        // Auto-hide alerts after 5 seconds
+        setTimeout(function() {
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(function(alert) {
+                const bsAlert = new bootstrap.Alert(alert);
+                bsAlert.close();
+            });
+        }, 5000);
+
+        // Add loading states to buttons (but not form submit buttons)
+        document.addEventListener('DOMContentLoaded', function() {
+            const buttons = document.querySelectorAll('.btn');
+            buttons.forEach(function(button) {
+                button.addEventListener('click', function(e) {
+                    // Don't add loading state to form submit buttons or buttons that are already disabled
+                    if (!this.classList.contains('btn-secondary') && 
+                        !this.classList.contains('btn-close') && 
+                        !this.disabled && 
+                        this.type !== 'submit') {
+                        this.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Loading...';
+                        this.disabled = true;
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

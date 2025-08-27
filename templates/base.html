@@ -676,6 +676,77 @@
             justify-content: center !important;
         }
 
+        /* Prevent IMAP form button size changes - both buttons same size */
+        #testImapBtn, #startImapBtn {
+            height: 38px !important;
+            width: 100% !important;
+            transition: background-color 0.2s ease, border-color 0.2s ease !important;
+            transform: none !important;
+            box-shadow: none !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            text-align: center !important;
+        }
+
+        #testImapBtn:hover, #startImapBtn:hover,
+        #testImapBtn:active, #startImapBtn:active,
+        #testImapBtn:focus, #startImapBtn:focus {
+            transform: none !important;
+            box-shadow: none !important;
+            height: 38px !important;
+            width: 100% !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+        }
+
+        /* Prevent all dashboard button size changes */
+        #scrapeBtn, #checkPermissionsBtn, #testImapBtn, #imapScrapeBtn, #getImapServersBtn {
+            transition: background-color 0.2s ease, border-color 0.2s ease !important;
+            transform: none !important;
+            box-shadow: none !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            text-align: center !important;
+        }
+
+        #scrapeBtn:hover, #checkPermissionsBtn:hover, #testImapBtn:hover, #imapScrapeBtn:hover, #getImapServersBtn:hover,
+        #scrapeBtn:active, #checkPermissionsBtn:active, #testImapBtn:active, #imapScrapeBtn:active, #getImapServersBtn:active,
+        #scrapeBtn:focus, #checkPermissionsBtn:focus, #testImapBtn:focus, #imapScrapeBtn:focus, #getImapServersBtn:focus {
+            transform: none !important;
+            box-shadow: none !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+        }
+
+        /* Specific sizes for different button types */
+        #scrapeBtn, #checkPermissionsBtn {
+            height: 48px !important;
+            width: 100% !important;
+        }
+
+        #scrapeBtn:hover, #checkPermissionsBtn:hover,
+        #scrapeBtn:active, #checkPermissionsBtn:active,
+        #scrapeBtn:focus, #checkPermissionsBtn:focus {
+            height: 48px !important;
+            width: 100% !important;
+        }
+
+        #testImapBtn, #imapScrapeBtn, #getImapServersBtn {
+            height: 48px !important;
+            width: 100% !important;
+        }
+
+        #testImapBtn:hover, #imapScrapeBtn:hover, #getImapServersBtn:hover,
+        #testImapBtn:active, #imapScrapeBtn:active, #getImapServersBtn:active,
+        #testImapBtn:focus, #imapScrapeBtn:focus, #getImapServersBtn:focus {
+            height: 48px !important;
+            width: 100% !important;
+        }
+
 
 
         /* Soft grey hover effect for Gmail input field */

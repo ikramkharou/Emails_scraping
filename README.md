@@ -10,7 +10,6 @@ A powerful Flask-based web application for extracting and scraping emails from m
 - **📧 Full Email Extraction** - Extract emails with headers, body content, and metadata
 - **💾 JSON Export** - Download extracted data in JSON format
 - **🛡️ Permission Management** - Check and manage Gmail API permissions
-- **🎨 Modern UI** - Clean, professional interface with tabbed authentication
 - **💻 Real-time Progress** - Live terminal logging and progress tracking
 - **🔒 Raw RFC822 Support** - Extract emails in raw RFC822 format
 - **⚡ Auto-Detection** - Automatic IMAP server detection based on email domain

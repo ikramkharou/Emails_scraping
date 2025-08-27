@@ -297,8 +297,7 @@ function startImapScraping() {
     if (!formData) return;
     
     const btn = document.getElementById('startImapBtn');
-    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Authenticating...';
-    btn.disabled = true;
+    // No loading state - button stays the same
     
     // Test the connection and store credentials
     fetch('/test_imap_connection', {
@@ -312,8 +311,6 @@ function startImapScraping() {
     .then(data => {
         if (data.success) {
             // Connection successful, store credentials and redirect
-            btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Redirecting...';
-            
             return fetch('/store_imap_credentials', {
                 method: 'POST',
                 headers: {
@@ -338,11 +335,8 @@ function startImapScraping() {
     })
     .catch(error => {
         showToast('error', 'Error', error.message);
-    })
-    .finally(() => {
-        btn.innerHTML = '<i class="fas fa-download me-1"></i>Start Scraping';
-        btn.disabled = false;
     });
+    // No finally block - button stays unchanged
 }
 
 // Toast notification function

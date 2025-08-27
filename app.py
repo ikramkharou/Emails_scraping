@@ -465,6 +465,9 @@ def oauth2callback():
             'scopes': granted_scopes  # Use the actual granted scopes
         }
         
+        # Set auth method for Gmail API
+        session['auth_method'] = 'gmail'
+        
         # Clean up OAuth state
         session.pop('oauth_state', None)
         
